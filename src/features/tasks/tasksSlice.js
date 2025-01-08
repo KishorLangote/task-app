@@ -34,18 +34,51 @@ export const taskSlice = createSlice({
                         status: "Completed",
                     },
                     {
-                        taskId: "T001",
+                        taskId: "T002",
                         description: "Get my room cleaned.",
-                        status: "Pending,"
+                        status: "Pending"
                     },
                 ],
             },
            
         ],
     },
-    reducers: {
 
+    reducers: {
+        toggleStatus: (state, action) => {
+            const { taskDate, taskId } = action.payload
+
+            console.log('taskDate, taskId:', taskDate, taskId)
+            console.log("Received payload:", action.payload);
+            console.log("State tasks:", state.tasks); 
+
+            //find the task group by date..
+            const taskGroup = state.tasks.find((group) => group.date === taskDate)
+            console.log("task group:",taskGroup)
+            if (!taskGroup) {
+                console.error(`No task group found for date: ${taskDate}`);
+                return;
+            }
+            if(taskGroup) {
+                // find the task by id
+
+                const task = taskGroup.tasks.find((task) => task.taskId === taskId)
+                if (!task) {
+                    console.error(`No task found with ID: ${taskId} on date: ${taskDate}`);
+                    return;
+                }
+                if(task) {
+                    console.log("task:", task)
+                    // toggle the status
+                    task.status = task.status === "Pending" ? "Completed" : "Pending"
+                }
+            }
+        }
     },
 })
 
+export const { toggleStatus } = taskSlice.actions
+
 export default taskSlice.reducer;
+
+
